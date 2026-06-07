@@ -208,7 +208,7 @@ export default function DashboardPage({
                   <small>
                     {alert.roomName}
                     {alert.itemName ? ` / ${alert.itemName}` : ""}
-                    {alert.observedValue ? ` / ${alert.observedValue}` : ""}
+                    {alert.metrics[0] ? ` / ${alert.metrics[0].value}` : ""}
                   </small>
                 </span>
                 <em>{alert.category}</em>
