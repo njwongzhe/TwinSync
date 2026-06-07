@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Office Chair</title>
+  <desc id="desc">TwinSync SVG icon for Office Chair.</desc>
+  <defs>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#000000" flood-opacity="0.32"/>
+    </filter>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8b5a2b"/>
+      <stop offset="45%" stop-color="#b87932"/>
+      <stop offset="100%" stop-color="#5f3717"/>
+    </linearGradient>
+    <linearGradient id="darkWood" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2d2418"/>
+      <stop offset="48%" stop-color="#6b4b29"/>
+      <stop offset="100%" stop-color="#1a1510"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#64748b"/>
+      <stop offset="45%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="55%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#dbeafe" stop-opacity="0.88"/>
+      <stop offset="55%" stop-color="#60a5fa" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.65"/>
+    </linearGradient>
+    <style>
+      .outline{stroke:#0f172a;stroke-width:5;stroke-linejoin:round;stroke-linecap:round;}
+      .thin{stroke:#0f172a;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;}
+      .detail{stroke:#334155;stroke-width:3;stroke-linecap:round;}
+      .white{fill:#f8fafc;}
+      .black{fill:#111827;}
+      .dark{fill:#1f2937;}
+      .muted{fill:#64748b;}
+      .green{fill:#22c55e;}
+      .red{fill:#ef4444;}
+      .yellow{fill:#fde68a;}
+    </style>
+  </defs>
+  
+  
+  <g filter="url(#shadow)">
+    <path d="M83 40h90c12 0 22 10 22 22v62c0 12-10 22-22 22H83c-12 0-22-10-22-22V62c0-12 10-22 22-22z" fill="#334155" class="outline"/>
+    <path d="M79 58h98M79 80h98M79 102h98" stroke="#64748b" stroke-width="5" stroke-linecap="round" opacity="0.55"/>
+    <path d="M75 139h106c12 0 22 10 22 22v16H53v-16c0-12 10-22 22-22z" fill="#475569" class="outline"/>
+    <path d="M128 177v38" stroke="#111827" stroke-width="12" stroke-linecap="round"/>
+    <path d="M88 218h80" stroke="#111827" stroke-width="11" stroke-linecap="round"/>
+    <path d="M128 215l-43 22M128 215l43 22" stroke="#111827" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="82" cy="237" r="9" fill="#1f2937" class="thin"/>
+    <circle cx="174" cy="237" r="9" fill="#1f2937" class="thin"/>
+  </g>
+
+</svg>

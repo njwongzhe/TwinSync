@@ -1,0 +1,143 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="70" y1="70" x2="442" y2="442" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0B234A"/>
+      <stop offset="100%" stop-color="#03142E"/>
+    </linearGradient>
+
+    <linearGradient id="cyanBlue" x1="120" y1="120" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#77F7FF"/>
+      <stop offset="55%" stop-color="#2ACBFF"/>
+      <stop offset="100%" stop-color="#1D5CFF"/>
+    </linearGradient>
+
+    <linearGradient id="blueGlow" x1="180" y1="120" x2="380" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6DF3FF"/>
+      <stop offset="50%" stop-color="#2BCBFF"/>
+      <stop offset="100%" stop-color="#1154FF"/>
+    </linearGradient>
+
+    <linearGradient id="silver" x1="120" y1="140" x2="260" y2="340" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#D9E0EC"/>
+    </linearGradient>
+
+    <linearGradient id="buildingGrad" x1="330" y1="300" x2="450" y2="440" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#8FFFFF"/>
+      <stop offset="50%" stop-color="#2CCEFF"/>
+      <stop offset="100%" stop-color="#123CDA"/>
+    </linearGradient>
+
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#39D7FF" flood-opacity="0.55"/>
+    </filter>
+
+    <clipPath id="circleClip">
+      <circle cx="256" cy="256" r="230"/>
+    </clipPath>
+  </defs>
+
+  <!-- Outer circular badge -->
+  <circle cx="256" cy="256" r="230" fill="url(#bgGrad)" stroke="#133A7A" stroke-width="8"/>
+
+  <!-- Decorative sync arcs -->
+  <path
+    d="M145 148 A170 170 0 0 1 404 164"
+    stroke="url(#cyanBlue)"
+    stroke-width="16"
+    stroke-linecap="round"
+    filter="url(#glow)"
+  />
+  <path
+    d="M138 376 A182 182 0 0 0 395 395"
+    stroke="url(#blueGlow)"
+    stroke-width="14"
+    stroke-linecap="round"
+    filter="url(#glow)"
+  />
+
+  <!-- Main content clipped inside the round badge -->
+  <g clip-path="url(#circleClip)">
+    <!-- T -->
+    <path
+      d="M125 158
+         H333
+         C344 158 350 170 343 179
+         L319 209
+         C315 214 309 217 303 217
+         H259
+         L182 352
+         C176 363 164 370 152 370
+         H130
+         C118 370 111 357 117 347
+         L196 217
+         H132
+         C121 217 114 205 114 194
+         V170
+         C114 163 119 158 125 158 Z"
+      fill="url(#silver)"
+      filter="url(#softShadow)"
+    />
+
+    <!-- S -->
+    <path
+      d="M364 225
+         H263
+         C244 225 228 240 228 259
+         C228 278 244 293 263 293
+         H304
+         C345 293 378 326 378 367
+         C378 408 345 441 304 441
+         H138
+         C129 441 124 431 129 424
+         L146 400
+         C150 394 156 391 163 391
+         H300
+         C319 391 335 376 335 357
+         C335 338 319 323 300 323
+         H259
+         C218 323 185 290 185 249
+         C185 208 218 175 259 175
+         H390
+         C399 175 404 185 399 192
+         L381 217
+         C377 222 371 225 364 225 Z"
+      fill="url(#cyanBlue)"
+      filter="url(#softShadow)"
+    />
+
+    <!-- Building group -->
+    <g filter="url(#softShadow)">
+      <!-- left small -->
+      <path d="M325 395 L350 374 V441 H325 Z" fill="url(#buildingGrad)"/>
+      <!-- mid -->
+      <path d="M355 352 L389 323 V441 H355 Z" fill="url(#buildingGrad)"/>
+      <!-- tall -->
+      <path d="M394 305 L437 268 V441 H394 Z" fill="url(#buildingGrad)"/>
+      <!-- right -->
+      <path d="M442 360 L470 338 V441 H442 Z" fill="url(#buildingGrad)"/>
+
+      <!-- windows -->
+      <g fill="#7EDBFF" opacity="0.9">
+        <rect x="366" y="351" width="8" height="5" rx="2"/>
+        <rect x="366" y="367" width="8" height="5" rx="2"/>
+        <rect x="366" y="383" width="8" height="5" rx="2"/>
+        <rect x="366" y="399" width="8" height="5" rx="2"/>
+
+        <rect x="414" y="302" width="10" height="5" rx="2"/>
+        <rect x="414" y="321" width="10" height="5" rx="2"/>
+        <rect x="414" y="340" width="10" height="5" rx="2"/>
+        <rect x="414" y="359" width="10" height="5" rx="2"/>
+        <rect x="414" y="378" width="10" height="5" rx="2"/>
+        <rect x="414" y="397" width="10" height="5" rx="2"/>
+
+        <rect x="337" y="389" width="7" height="5" rx="2"/>
+        <rect x="337" y="404" width="7" height="5" rx="2"/>
+      </g>
+    </g>
+  </g>
+</svg>

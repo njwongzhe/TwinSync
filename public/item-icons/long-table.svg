@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Long Table</title>
+  <desc id="desc">TwinSync SVG icon for Long Table.</desc>
+  <defs>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#000000" flood-opacity="0.32"/>
+    </filter>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8b5a2b"/>
+      <stop offset="45%" stop-color="#b87932"/>
+      <stop offset="100%" stop-color="#5f3717"/>
+    </linearGradient>
+    <linearGradient id="darkWood" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2d2418"/>
+      <stop offset="48%" stop-color="#6b4b29"/>
+      <stop offset="100%" stop-color="#1a1510"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#64748b"/>
+      <stop offset="45%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="55%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#dbeafe" stop-opacity="0.88"/>
+      <stop offset="55%" stop-color="#60a5fa" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.65"/>
+    </linearGradient>
+    <style>
+      .outline{stroke:#0f172a;stroke-width:5;stroke-linejoin:round;stroke-linecap:round;}
+      .thin{stroke:#0f172a;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;}
+      .detail{stroke:#334155;stroke-width:3;stroke-linecap:round;}
+      .white{fill:#f8fafc;}
+      .black{fill:#111827;}
+      .dark{fill:#1f2937;}
+      .muted{fill:#64748b;}
+      .green{fill:#22c55e;}
+      .red{fill:#ef4444;}
+      .yellow{fill:#fde68a;}
+    </style>
+  </defs>
+  
+  
+  <g filter="url(#shadow)">
+    <path d="M27 105l101-45 101 45-101 48z" fill="url(#wood)" class="outline"/>
+    <path d="M27 105v28l101 52 101-52v-28l-101 48z" fill="#854d1c" class="outline"/>
+    <path d="M56 145v54M94 163v54M128 178v54M162 163v54M200 145v54" stroke="#5f3717" stroke-width="11" stroke-linecap="round"/>
+    <path d="M56 145v54M94 163v54M128 178v54M162 163v54M200 145v54" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/>
+    <path d="M70 104l58-25 58 25-58 28z" fill="#b87932" opacity="0.65"/>
+  </g>
+
+</svg>

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Wall Air Conditioner</title>
+  <desc id="desc">TwinSync SVG icon for Wall Air Conditioner.</desc>
+  <defs>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#000000" flood-opacity="0.32"/>
+    </filter>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8b5a2b"/>
+      <stop offset="45%" stop-color="#b87932"/>
+      <stop offset="100%" stop-color="#5f3717"/>
+    </linearGradient>
+    <linearGradient id="darkWood" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2d2418"/>
+      <stop offset="48%" stop-color="#6b4b29"/>
+      <stop offset="100%" stop-color="#1a1510"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#64748b"/>
+      <stop offset="45%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="55%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#dbeafe" stop-opacity="0.88"/>
+      <stop offset="55%" stop-color="#60a5fa" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.65"/>
+    </linearGradient>
+    <style>
+      .outline{stroke:#0f172a;stroke-width:5;stroke-linejoin:round;stroke-linecap:round;}
+      .thin{stroke:#0f172a;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;}
+      .detail{stroke:#334155;stroke-width:3;stroke-linecap:round;}
+      .white{fill:#f8fafc;}
+      .black{fill:#111827;}
+      .dark{fill:#1f2937;}
+      .muted{fill:#64748b;}
+      .green{fill:#22c55e;}
+      .red{fill:#ef4444;}
+      .yellow{fill:#fde68a;}
+    </style>
+  </defs>
+  
+  
+  <g filter="url(#shadow)">
+    <path d="M39 75h178c12 0 20 8 20 20v55c0 12-8 20-20 20H39c-12 0-20-8-20-20V95c0-12 8-20 20-20z" fill="#e2efff" class="outline"/>
+    <path d="M34 92h188" stroke="#f8fafc" stroke-width="7" stroke-linecap="round"/>
+    <path d="M46 138h164" stroke="#1e293b" stroke-width="6" stroke-linecap="round"/>
+    <path d="M59 151c22 12 116 12 138 0" fill="none" stroke="#64748b" stroke-width="5" stroke-linecap="round"/>
+    <path d="M62 113h48M125 113h42" class="detail"/>
+    <rect x="181" y="104" width="28" height="18" rx="5" fill="#bfdbfe" stroke="#1e293b" stroke-width="3"/>
+    <circle cx="201" cy="113" r="4" fill="#22c55e" filter="url(#softGlow)"/>
+    <text x="68" y="125" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#1e3a8a">AC</text>
+  </g>
+
+</svg>
