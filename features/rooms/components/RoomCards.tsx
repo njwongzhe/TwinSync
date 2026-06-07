@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, type DragEvent } from "react";
 import styles from "../rooms.module.css";
 import { DigitalTwinRoom, RoomEnvironmentReading } from "../domain/types";
 import { calculateRoomKpi } from "../domain/kpi";
@@ -12,6 +13,7 @@ type RoomCardsProps = {
   onExplore: (roomId: string) => void;
   onPanel: (roomId: string) => void;
   onDelete: (roomId: string) => void;
+  onReorder: (draggedRoomId: string, targetRoomId: string) => void;
 };
 
 export default function RoomCards({
@@ -21,8 +23,53 @@ export default function RoomCards({
   onSelectRoom,
   onExplore,
   onPanel,
-  onDelete
+  onDelete,
+  onReorder
 }: RoomCardsProps) {
+  const [draggedRoomId, setDraggedRoomId] = useState<string | null>(null);
+  const [dragOverRoomId, setDragOverRoomId] = useState<string | null>(null);
+
+  function handleDragStart(event: DragEvent<HTMLElement>, roomId: string) {
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", roomId);
+    setDraggedRoomId(roomId);
+    setDragOverRoomId(null);
+  }
+
+  function handleDragOver(
+    event: DragEvent<HTMLElement>,
+    targetRoomId: string
+  ) {
+    if (!draggedRoomId || draggedRoomId === targetRoomId) {
+      return;
+    }
+
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    setDragOverRoomId(targetRoomId);
+  }
+
+  function handleDrop(
+    event: DragEvent<HTMLElement>,
+    targetRoomId: string
+  ) {
+    event.preventDefault();
+    const sourceRoomId =
+      event.dataTransfer.getData("text/plain") || draggedRoomId;
+
+    if (sourceRoomId && sourceRoomId !== targetRoomId) {
+      onReorder(sourceRoomId, targetRoomId);
+    }
+
+    setDraggedRoomId(null);
+    setDragOverRoomId(null);
+  }
+
+  function handleDragEnd() {
+    setDraggedRoomId(null);
+    setDragOverRoomId(null);
+  }
+
   if (rooms.length === 0) {
     return (
       <section className={styles.emptyState}>
@@ -44,15 +91,33 @@ export default function RoomCards({
         return (
           <article
             key={room.id}
-            className={`${styles.roomCard} ${isSelected ? styles.selectedRoomCard : ""}`}
+            className={`${styles.roomCard} ${
+              isSelected ? styles.selectedRoomCard : ""
+            } ${draggedRoomId === room.id ? styles.draggedRoomCard : ""} ${
+              dragOverRoomId === room.id ? styles.dragOverRoomCard : ""
+            }`}
+            draggable
             onClick={() => onSelectRoom(room.id)}
+            onDragStart={(event) => handleDragStart(event, room.id)}
+            onDragOver={(event) => handleDragOver(event, room.id)}
+            onDrop={(event) => handleDrop(event, room.id)}
+            onDragEnd={handleDragEnd}
           >
             <div className={styles.cardHeader}>
               <div>
                 <h2>{room.name}</h2>
                 <p>{room.width}m × {room.length}m × {room.height}m / {room.layoutType}</p>
               </div>
-              <span className={styles.roomBadge}>{kpi.efficiencyScore}% efficient</span>
+              <div className={styles.roomCardHeaderActions}>
+                <span className={styles.roomBadge}>{kpi.efficiencyScore}% efficient</span>
+                <span
+                  className={styles.roomDragHandle}
+                  title="Drag card to reorder room"
+                >
+                  <span className={styles.roomDragGrip} aria-hidden="true" />
+                  Drag
+                </span>
+              </div>
             </div>
 
             <div className={styles.kpiGrid}>
