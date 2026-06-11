@@ -200,7 +200,59 @@
 
 .roomCard {
   padding: 22px;
-  cursor: pointer;
+  cursor: grab;
+  user-select: none;
+}
+
+.roomCard:active {
+  cursor: grabbing;
+}
+
+.roomCard button {
+  user-select: auto;
+}
+
+.roomCardHeaderActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.roomDragHandle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 5px 9px;
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  border-radius: 8px;
+  color: #64748b;
+  background: #f8fafc;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.roomDragGrip {
+  width: 10px;
+  height: 16px;
+  background-image: radial-gradient(currentColor 1.2px, transparent 1.2px);
+  background-position: 0 0;
+  background-size: 5px 5px;
+}
+
+.draggedRoomCard {
+  opacity: 0.45;
+  transform: scale(0.98);
+}
+
+.dragOverRoomCard {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18);
+  transform: translateY(-4px);
 }
 
 .selectedRoomCard {
@@ -648,11 +700,12 @@
   font-weight: 900;
 }
 
-.hotbarSlot div {
-  width: 30px;
-  height: 22px;
-  margin: 14px auto 5px;
-  border-radius: 8px;
+.hotbarSlotIcon {
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin: 10px auto 2px;
+  object-fit: contain;
 }
 
 .hotbarSlot small,
@@ -961,6 +1014,25 @@
 .selectedRoomCard {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px rgba(173, 198, 255, 0.16), 0 10px 36px rgba(0, 0, 0, 0.4);
+}
+
+.roomDragHandle {
+  border-color: var(--border);
+  color: var(--muted);
+  background: var(--surface-soft);
+}
+
+.draggedRoomCard,
+.draggedRoomCard:hover {
+  opacity: 0.45;
+  transform: scale(0.98);
+}
+
+.dragOverRoomCard,
+.dragOverRoomCard:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(173, 198, 255, 0.16), 0 12px 38px rgba(0, 0, 0, 0.45);
+  transform: translateY(-4px);
 }
 
 .cardHeader h2,

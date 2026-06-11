@@ -9,6 +9,7 @@ export const TELEMETRY_INTERVAL_MS = 8000;
 
 export type RoomTelemetry = RoomEnvironmentReading & {
   powerDeltaPercent: number;
+  criticalIncident: boolean;
 };
 
 export type TelemetryHistoryPoint = {
@@ -167,6 +168,55 @@ function phaseAt(cycle: number, room: DigitalTwinRoom, roomIndex: number) {
   };
 }
 
+function incidentAt(cycle: number, roomIndex: number) {
+  const incidentCycle = (cycle % 36 + 36) % 36;
+
+  if (incidentCycle === 6 && roomIndex === 0) {
+    return {
+      label: "Thermal and load incident",
+      temperatureDelta: 5.8,
+      humidityDelta: 0,
+      loadFactor: 1.85
+    };
+  }
+
+  if (incidentCycle === 24) {
+    if (roomIndex === 0) {
+      return {
+        label: "Critical cooling incident",
+        temperatureDelta: 6.2,
+        humidityDelta: 0,
+        loadFactor: 1
+      };
+    }
+
+    if (roomIndex === 1) {
+      return {
+        label: "Critical humidity incident",
+        temperatureDelta: 0,
+        humidityDelta: 27,
+        loadFactor: 1
+      };
+    }
+
+    if (roomIndex === 2) {
+      return {
+        label: "Critical load incident",
+        temperatureDelta: 0,
+        humidityDelta: 0,
+        loadFactor: 2.15
+      };
+    }
+  }
+
+  return {
+    label: null,
+    temperatureDelta: 0,
+    humidityDelta: 0,
+    loadFactor: 1
+  };
+}
+
 function nominalRoomPower(room: DigitalTwinRoom) {
   return room.items.reduce((total, item) => {
     const definition = getItemDefinition(item.itemTypeId);
@@ -186,6 +236,8 @@ function createRoomReading(
   ];
   const kpi = calculateRoomKpi(room);
   const variation = roomVariation(room.id);
+  const incident = incidentAt(cycle, roomIndex);
+  const previousIncident = incidentAt(cycle - 1, roomIndex);
   const poweredCooling = room.items.some((item) => (
     item.status === "on" &&
     ["wall-ac", "ceiling-ac"].includes(item.itemTypeId)
@@ -199,10 +251,14 @@ function createRoomReading(
     phase.temperatureDelta +
     variation +
     activeHeat -
-    coolingEffect
+    coolingEffect +
+    incident.temperatureDelta
   );
   const humidityPercent = Math.round(clamp(
-    profile.baseHumidityPercent + phase.humidityDelta + variation * 2,
+    profile.baseHumidityPercent +
+    phase.humidityDelta +
+    variation * 2 +
+    incident.humidityDelta,
     28,
     78
   ));
@@ -212,13 +268,16 @@ function createRoomReading(
   );
   const controlledLoad = kpi.estimatedPowerWatt * 0.35;
   const livePowerWatt = Math.round(
-    nominalPower * profile.utilization * phase.loadFactor +
+    nominalPower * profile.utilization * phase.loadFactor * incident.loadFactor +
     controlledLoad +
     35 +
     Math.abs(variation) * 45
   );
   const previousPowerWatt = Math.round(
-    nominalPower * profile.utilization * previousPhase.loadFactor +
+    nominalPower *
+    profile.utilization *
+    previousPhase.loadFactor *
+    previousIncident.loadFactor +
     controlledLoad +
     35 +
     Math.abs(variation) * 45
@@ -230,7 +289,8 @@ function createRoomReading(
     previousPhase.temperatureDelta +
     variation +
     activeHeat -
-    coolingEffect;
+    coolingEffect +
+    previousIncident.temperatureDelta;
   const temperatureDifference = temperatureC - previousTemperature;
   const temperatureTrend: RoomEnvironmentReading["temperatureTrend"] = temperatureDifference > 0.35
     ? "rising"
@@ -260,11 +320,12 @@ function createRoomReading(
     humidityPercent,
     livePowerWatt,
     powerDeltaPercent,
+    criticalIncident: incident.label !== null,
     occupancyPercent,
     temperatureStatus,
     temperatureTrend,
     sensorStatus,
-    phase: phase.label
+    phase: incident.label ?? phase.label
   };
 }
 

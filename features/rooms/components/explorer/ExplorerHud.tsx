@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import styles from "../../rooms.module.css";
 import {
   DigitalTwinRoom,
@@ -8,7 +9,7 @@ import {
   RoomEnvironmentReading,
   RoomKpi
 } from "../../domain/types";
-import { getItemDefinition } from "../../domain/items";
+import { getItemDefinition, getItemIconPath } from "../../domain/items";
 
 type ExplorerHudProps = {
   room: DigitalTwinRoom;
@@ -91,7 +92,15 @@ export default function ExplorerHud({
             return (
               <div key={index} className={`${styles.hotbarSlot} ${selectedSlot === index ? styles.activeHotbarSlot : ""}`}>
                 <span>{numberLabel}</span>
-                <div style={{ background: definition?.color ?? "#94a3b8" }} />
+                {definition && (
+                  <Image
+                    className={styles.hotbarSlotIcon}
+                    src={getItemIconPath(definition.id)}
+                    alt=""
+                    width={40}
+                    height={40}
+                  />
+                )}
                 <small>{definition?.label ?? "Empty"}</small>
               </div>
             );

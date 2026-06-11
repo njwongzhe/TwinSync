@@ -80,6 +80,31 @@ export default function RoomManagementPage({
     }
   }
 
+  function reorderRooms(draggedRoomId: string, targetRoomId: string) {
+    setRooms((currentRooms) => {
+      const draggedIndex = currentRooms.findIndex(
+        (room) => room.id === draggedRoomId
+      );
+      const targetIndex = currentRooms.findIndex(
+        (room) => room.id === targetRoomId
+      );
+
+      if (
+        draggedIndex < 0 ||
+        targetIndex < 0 ||
+        draggedIndex === targetIndex
+      ) {
+        return currentRooms;
+      }
+
+      const reorderedRooms = [...currentRooms];
+      const [draggedRoom] = reorderedRooms.splice(draggedIndex, 1);
+      reorderedRooms.splice(targetIndex, 0, draggedRoom);
+      return reorderedRooms;
+    });
+    setToast("Room order updated.");
+  }
+
   function handleCreateRoom(params: Parameters<typeof createRoom>[0]) {
     const newRoom = createRoom(params);
     setRooms((currentRooms) => [...currentRooms, newRoom]);
@@ -197,6 +222,7 @@ export default function RoomManagementPage({
           setViewMode("panel");
         }}
         onDelete={deleteRoom}
+        onReorder={reorderRooms}
       />
 
       {showCreateModal && (
