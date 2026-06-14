@@ -14,11 +14,35 @@ import LongTableModel from "./LongTableModel";
 import WallAircondModel from "./WallAircondModel";
 import WhiteboardModel from "./WhiteboardModel";
 import WindowModel from "./WindowModel";
-import { DetailedModelProps } from "./modelTypes";
+import { DetailedModelProps, modelMaterial, StatusLight } from "./modelTypes";
+import { getItemDefinition } from "../../domain/items";
+import type { ItemMeshDefinition } from "../../domain/types";
 
 export type ItemModelProps = DetailedModelProps & {
   type: string;
 };
+
+function boxArgs(args: number[]): [number, number, number] {
+  return [args[0] ?? 0.1, args[1] ?? 0.1, args[2] ?? 0.1];
+}
+
+function cylinderArgs(args: number[]): [number, number, number, number] {
+  return [args[0] ?? 0.05, args[1] ?? args[0] ?? 0.05, args[2] ?? 0.1, args[3] ?? 16];
+}
+
+function sphereArgs(args: number[]): [number, number, number] {
+  return [args[0] ?? 0.05, args[1] ?? 16, args[2] ?? 12];
+}
+
+function renderMeshGeometry(mesh: ItemMeshDefinition) {
+  if (mesh.shape === "cylinder") {
+    return <cylinderGeometry args={cylinderArgs(mesh.args)} />;
+  }
+  if (mesh.shape === "sphere") {
+    return <sphereGeometry args={sphereArgs(mesh.args)} />;
+  }
+  return <boxGeometry args={boxArgs(mesh.args)} />;
+}
 
 export default function ItemModel({ type, ...props }: ItemModelProps) {
   const modelRef = useRef<THREE.Group>(null);
@@ -78,7 +102,58 @@ export default function ItemModel({ type, ...props }: ItemModelProps) {
       model = <OfficeChairModel {...props} />;
       break;
     default:
+      break;
+  }
+
+  if (!model) {
+    const definition = getItemDefinition(type);
+    if (definition) {
+      const w = definition.width;
+      const h = definition.height;
+      const l = definition.length;
+      const col = definition.color || "#64748b";
+
+      if (definition.meshes && definition.meshes.length > 0) {
+        model = (
+          <group>
+            {definition.meshes.map((mesh, idx) => {
+              const pos = mesh.position || [0, 0, 0];
+              const rot = mesh.rotation || [0, 0, 0];
+              const color = mesh.color || col;
+              return (
+                <mesh
+                  key={idx}
+                  position={[pos[0] ?? 0, pos[1] ?? 0, pos[2] ?? 0]}
+                  rotation={[rot[0] ?? 0, rot[1] ?? 0, rot[2] ?? 0]}
+                  castShadow
+                  receiveShadow
+                >
+                  {renderMeshGeometry(mesh)}
+                  <meshStandardMaterial {...modelMaterial(props, color)} />
+                </mesh>
+              );
+            })}
+            {definition.isDevice && (
+              <StatusLight position={[0, h / 2 - 0.05, l / 2 - 0.05]} status={props.status} />
+            )}
+          </group>
+        );
+      } else {
+        model = (
+          <group>
+            <mesh castShadow receiveShadow position={[0, 0, 0]}>
+              <boxGeometry args={[w, h, l]} />
+              <meshStandardMaterial {...modelMaterial(props, col)} />
+            </mesh>
+            {definition.isDevice && (
+              <StatusLight position={[0, h / 2 - 0.05, l / 2 - 0.05]} status={props.status} />
+            )}
+          </group>
+        );
+      }
+    } else {
       return null;
+    }
   }
 
   return <group ref={modelRef}>{model}</group>;

@@ -12,6 +12,14 @@ export type Vector3Data = {
   z: number;
 };
 
+export type ItemMeshDefinition = {
+  shape: "box" | "cylinder" | "sphere";
+  args: number[];
+  position: number[];
+  rotation?: number[];
+  color: string;
+};
+
 export type ItemDefinition = {
   id: string;
   label: string;
@@ -25,6 +33,8 @@ export type ItemDefinition = {
   canHoldItems?: boolean;
   defaultPowerWatt?: number;
   description: string;
+  meshes?: ItemMeshDefinition[];
+  icon?: string;
 };
 
 export type PlacedItem = {
