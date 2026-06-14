@@ -63,21 +63,23 @@ export default function BagOverlay({
                 className={`${styles.bagSlot} ${selectedSlot === index ? styles.activeBagSlot : ""}`}
                 onClick={() => onSelectSlot(index)}
               >
-                <span>{numberLabel}</span>
+                <span className={styles.bagSlotNumber}>{numberLabel}</span>
                 {item && (
-                  item.icon ? (
-                    <span className={styles.bagSlotIcon} style={{ fontSize: "1.7rem", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", flexShrink: 0, lineHeight: 1 }}>
-                      {item.icon}
-                    </span>
-                  ) : (
-                    <Image
-                      className={styles.bagSlotIcon}
-                      src={getItemIconPath(item.id)}
-                      alt=""
-                      width={38}
-                      height={38}
-                    />
-                  )
+                  <span className={styles.bagSlotIconFrame}>
+                    {item.icon ? (
+                      <span className={styles.generatedItemIcon} aria-hidden="true">
+                        {item.icon}
+                      </span>
+                    ) : (
+                      <Image
+                        className={styles.bagSlotIcon}
+                        src={getItemIconPath(item.id)}
+                        alt=""
+                        width={30}
+                        height={30}
+                      />
+                    )}
+                  </span>
                 )}
                 <strong>{item?.label ?? "Empty"}</strong>
               </button>

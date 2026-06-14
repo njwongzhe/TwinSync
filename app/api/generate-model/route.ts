@@ -109,11 +109,18 @@ const DEFAULT_DIMENSIONS: Record<AssetArchetype, { width: number; length: number
 };
 
 function buildPrompt(userPrompt: string) {
-  return `You generate primitive-based 3D digital twin assets for a React Three Fiber room editor.
+  return `You are a senior industrial designer and low-poly 3D artist creating a polished, realistic digital-twin asset for a React Three Fiber room editor.
 
 User request: ${JSON.stringify(userPrompt)}
 
-Return one JSON object only. The object must describe a recognizable asset built from box, cylinder, and sphere primitives.
+Return exactly one JSON object and no markdown. The asset must be immediately recognizable, visually complete from every angle, correctly proportioned, and built only from box, cylinder, and sphere primitives.
+
+Design process:
+1. Identify the nearest supported archetype and its real-world construction.
+2. Build the primary silhouette and load-bearing structure.
+3. Add the functional parts a real object needs.
+4. Add secondary details that communicate scale and purpose.
+5. Apply a coherent, colourful material palette with realistic contrast.
 
 Coordinate system and geometry rules:
 - x = width, y = height, z = length. The asset is centered at [0, 0, 0].
@@ -122,10 +129,22 @@ Coordinate system and geometry rules:
 - sphere args must be [radius, widthSegments, heightSegments].
 - Every mesh must fit inside the asset width, length, and height.
 - The lowest visible point must be at y = -height / 2. Floor objects must visibly stand on the floor.
-- Use 8 to 18 meshes. Avoid one-box models.
-- Include recognizable silhouette parts: legs, backrest, arms, screen, vents, frame, handle, shelves, blades, lens, buttons, panels, or cushions when relevant.
-- Use at least 3 colors: main material, darker trim/shadow, and one small accent/detail color.
-- Prefer physically typical dimensions in meters.
+- Use 12 to 18 purposeful meshes. Never return a single block or an unfinished shell.
+- Make connected parts touch correctly. Do not create floating, intersecting, paper-thin, or unsupported parts.
+- Preserve sensible symmetry and alignment where the real object would be symmetrical.
+- Use realistic dimensions in meters and realistic relative thicknesses.
+- Include all important archetype-specific parts. Examples:
+  - chair: seat, backrest, support structure, legs or pedestal, and optional arms;
+  - table: top, supports or legs, braces, and edge detail;
+  - computer: monitor frame and screen, stand, base, system unit, controls, and indicator;
+  - air-conditioner: casing, intake, outlet, vent slats, display, and status indicator;
+  - printer: body, paper tray, output slot, scanner or lid, control panel, and indicator;
+  - cabinet or shelf: frame, shelves or doors, handles, base, and visible depth;
+  - light or fan: mount, stem or housing, shade or blades, hub, and operating detail.
+- Use 4 to 7 coordinated hex colours: a main material, a lighter face, a darker trim/shadow, one functional material, and one or two restrained accent colours.
+- Avoid making every mesh the same colour. Use colour to separate functional parts.
+- Prefer believable material colours such as painted metal, wood, polymer, glass, fabric, and indicator lights. Avoid excessive neon unless requested.
+- Small detail meshes must remain visible at normal preview distance.
 - Do not invent unsupported geometry or texture fields.
 
 Choose the nearest archetype from: table, chair, sofa, cabinet, shelf, bed, screen, computer, printer, sensor, air-conditioner, light, fan, door, window, whiteboard, generic.
@@ -489,7 +508,7 @@ function normalizeAsset(raw: unknown, userPrompt: string): GeneratedAsset {
   const template = templateMeshes(archetype, width, length, height, color).map((mesh) => normalizeMesh(mesh, assetCore)).filter((mesh): mesh is MeshDefinition => Boolean(mesh));
   const geminiScore = meshQualityScore(geminiMeshes, archetype);
   const templateScore = meshQualityScore(template, archetype);
-  const useTemplate = geminiMeshes.length < 6 || geminiScore < Math.max(12, templateScore * 0.72);
+  const useTemplate = geminiMeshes.length < 10 || geminiScore < Math.max(18, templateScore * 0.78);
   const meshes = groundMeshes(useTemplate ? template : geminiMeshes.slice(0, 18), height);
 
   return {
@@ -529,6 +548,144 @@ function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : "Failed to generate asset";
 }
 
+function getGeminiApiKeys() {
+  const numberedKeys = Array.from({ length: 20 }, (_, index) => (
+    process.env[`GEMINI_API_KEY_${index + 1}`]?.trim()
+  ));
+  const legacyKey = process.env.GEMINI_API_KEY?.trim();
+
+  return Array.from(new Set(
+    [...numberedKeys, legacyKey].filter((key): key is string => Boolean(key))
+  ));
+}
+
+function buildGeminiRequestBody(prompt: string) {
+  return {
+    contents: [
+      {
+        parts: [
+          {
+            text: buildPrompt(prompt),
+          },
+        ],
+      },
+    ],
+    generationConfig: {
+      temperature: 0.28,
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "OBJECT",
+        properties: {
+          id: { type: "STRING" },
+          label: { type: "STRING" },
+          category: { type: "STRING", enum: ["device", "furniture", "structure"] },
+          mount: { type: "STRING", enum: ["floor", "wall", "ceiling"] },
+          width: { type: "NUMBER" },
+          length: { type: "NUMBER" },
+          height: { type: "NUMBER" },
+          color: { type: "STRING" },
+          isDevice: { type: "BOOLEAN" },
+          defaultPowerWatt: { type: "NUMBER" },
+          description: { type: "STRING" },
+          icon: { type: "STRING" },
+          archetype: {
+            type: "STRING",
+            enum: [
+              "table",
+              "chair",
+              "sofa",
+              "cabinet",
+              "shelf",
+              "bed",
+              "screen",
+              "computer",
+              "printer",
+              "sensor",
+              "air-conditioner",
+              "light",
+              "fan",
+              "door",
+              "window",
+              "whiteboard",
+              "generic",
+            ],
+          },
+          meshes: {
+            type: "ARRAY",
+            minItems: 12,
+            maxItems: 18,
+            items: {
+              type: "OBJECT",
+              properties: {
+                shape: { type: "STRING", enum: ["box", "cylinder", "sphere"] },
+                args: {
+                  type: "ARRAY",
+                  items: { type: "NUMBER" },
+                },
+                position: {
+                  type: "ARRAY",
+                  items: { type: "NUMBER" },
+                },
+                rotation: {
+                  type: "ARRAY",
+                  items: { type: "NUMBER" },
+                },
+                color: { type: "STRING" },
+              },
+              required: ["shape", "args", "position", "color"],
+            },
+          },
+        },
+        required: [
+          "id",
+          "label",
+          "category",
+          "mount",
+          "width",
+          "length",
+          "height",
+          "color",
+          "isDevice",
+          "description",
+          "icon",
+          "archetype",
+          "meshes",
+        ],
+      },
+    },
+  };
+}
+
+async function generateWithGemini(
+  apiKey: string,
+  prompt: string
+): Promise<GeneratedAsset> {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(buildGeminiRequestBody(prompt)),
+      signal: AbortSignal.timeout(45_000),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Gemini request failed with HTTP ${response.status}`);
+  }
+
+  const data = await response.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text || typeof text !== "string") {
+    throw new Error("Gemini returned an empty model response");
+  }
+
+  return normalizeAsset(parseGeminiText(text), prompt);
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -537,131 +694,38 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-    if (!apiKey) {
+    const apiKeys = getGeminiApiKeys();
+    if (apiKeys.length === 0) {
       return NextResponse.json(
-        { error: "Gemini API key is not configured. Please add GEMINI_API_KEY to your .env file." },
+        {
+          error:
+            "No Gemini API key is configured. Add at least one key from GEMINI_API_KEY_1 through GEMINI_API_KEY_20 to the server .env file."
+        },
         { status: 500 },
       );
     }
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+    const failures: string[] = [];
+
+    for (const [index, apiKey] of apiKeys.entries()) {
+      try {
+        const asset = await generateWithGemini(apiKey, prompt);
+        return NextResponse.json(asset);
+      } catch (error) {
+        const reason = errorMessage(error);
+        failures.push(`Key ${index + 1}: ${reason}`);
+        console.warn(`Gemini model generation attempt ${index + 1} failed: ${reason}`);
+      }
+    }
+
+    console.error("All Gemini API keys failed:", failures);
+    return NextResponse.json(
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: buildPrompt(prompt),
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.35,
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: "OBJECT",
-              properties: {
-                id: { type: "STRING" },
-                label: { type: "STRING" },
-                category: { type: "STRING", enum: ["device", "furniture", "structure"] },
-                mount: { type: "STRING", enum: ["floor", "wall", "ceiling"] },
-                width: { type: "NUMBER" },
-                length: { type: "NUMBER" },
-                height: { type: "NUMBER" },
-                color: { type: "STRING" },
-                isDevice: { type: "BOOLEAN" },
-                defaultPowerWatt: { type: "NUMBER" },
-                description: { type: "STRING" },
-                icon: { type: "STRING" },
-                archetype: {
-                  type: "STRING",
-                  enum: [
-                    "table",
-                    "chair",
-                    "sofa",
-                    "cabinet",
-                    "shelf",
-                    "bed",
-                    "screen",
-                    "computer",
-                    "printer",
-                    "sensor",
-                    "air-conditioner",
-                    "light",
-                    "fan",
-                    "door",
-                    "window",
-                    "whiteboard",
-                    "generic",
-                  ],
-                },
-                meshes: {
-                  type: "ARRAY",
-                  items: {
-                    type: "OBJECT",
-                    properties: {
-                      shape: { type: "STRING", enum: ["box", "cylinder", "sphere"] },
-                      args: {
-                        type: "ARRAY",
-                        items: { type: "NUMBER" },
-                      },
-                      position: {
-                        type: "ARRAY",
-                        items: { type: "NUMBER" },
-                      },
-                      rotation: {
-                        type: "ARRAY",
-                        items: { type: "NUMBER" },
-                      },
-                      color: { type: "STRING" },
-                    },
-                    required: ["shape", "args", "position", "color"],
-                  },
-                },
-              },
-              required: [
-                "id",
-                "label",
-                "category",
-                "mount",
-                "width",
-                "length",
-                "height",
-                "color",
-                "isDevice",
-                "description",
-                "icon",
-                "archetype",
-                "meshes",
-              ],
-            },
-          },
-        }),
+        error:
+          `Unable to generate the 3D model after trying all ${apiKeys.length} configured Gemini API ${apiKeys.length === 1 ? "key" : "keys"}. Check key validity, quota, billing, and network access.`
       },
+      { status: 502 },
     );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      return NextResponse.json(
-        { error: `Gemini API returned error: ${errorText}` },
-        { status: response.status },
-      );
-    }
-
-    const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text || typeof text !== "string") {
-      return NextResponse.json({ error: "Gemini API returned empty response" }, { status: 500 });
-    }
-
-    return NextResponse.json(normalizeAsset(parseGeminiText(text), prompt));
   } catch (error: unknown) {
     console.error(error);
     return NextResponse.json({ error: errorMessage(error) }, { status: 500 });

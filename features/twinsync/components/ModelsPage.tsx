@@ -24,7 +24,7 @@ function loadCustomModels() {
 function getErrorMessage(error: unknown) {
   return error instanceof Error
     ? error.message
-    : "Failed to generate asset. Please verify GEMINI_API_KEY is configured in your server .env file.";
+    : "Failed to generate asset. Configure at least one server key from GEMINI_API_KEY_1 through GEMINI_API_KEY_20.";
 }
 
 // Pedestal helper component to show under/behind/above models
@@ -78,6 +78,8 @@ export default function ModelsPage() {
   const [generating, setGenerating] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [customModels, setCustomModels] = useState<ItemDefinition[]>(loadCustomModels);
+  const [editingModelName, setEditingModelName] = useState(false);
+  const [modelNameDraft, setModelNameDraft] = useState("");
 
   // Combine base definitions with custom generated models
   const allModels = useMemo(() => {
@@ -163,6 +165,7 @@ export default function ModelsPage() {
       setShowAiModal(false);
       setPromptInput("");
       setSelectedModelId(cleanId);
+      setEditingModelName(false);
     } catch (err: unknown) {
       console.error(err);
       setErrorMsg(getErrorMessage(err));
@@ -175,9 +178,47 @@ export default function ModelsPage() {
     const nextModels = customModels.filter((model) => model.id !== id);
     setCustomModels(nextModels);
     window.localStorage.setItem("twinsync-custom-models", JSON.stringify(nextModels));
+    setEditingModelName(false);
     if (selectedModelId === id) {
       setSelectedModelId("desk-desktop");
     }
+  }
+
+  function startModelNameEdit() {
+    if (!selectedModel.id.startsWith("custom-")) {
+      return;
+    }
+
+    setModelNameDraft(selectedModel.label);
+    setEditingModelName(true);
+  }
+
+  function saveModelName() {
+    const nextName = modelNameDraft.trim().replace(/\s+/g, " ").slice(0, 48);
+
+    if (!nextName) {
+      setModelNameDraft(selectedModel.label);
+      setEditingModelName(false);
+      return;
+    }
+
+    const nextModels = customModels.map((model) => (
+      model.id === selectedModel.id
+        ? { ...model, label: nextName }
+        : model
+    ));
+
+    setCustomModels(nextModels);
+    window.localStorage.setItem(
+      "twinsync-custom-models",
+      JSON.stringify(nextModels)
+    );
+    setEditingModelName(false);
+  }
+
+  function cancelModelNameEdit() {
+    setModelNameDraft(selectedModel.label);
+    setEditingModelName(false);
   }
 
   return (
@@ -263,6 +304,7 @@ export default function ModelsPage() {
                   key={item.id}
                   className={`${styles.modelCardItem} ${selectedModelId === item.id ? styles.selectedModelCardItem : ""}`}
                   onClick={() => {
+                    setEditingModelName(false);
                     setSelectedModelId(item.id);
                     // Reset status to "on" if category changes
                     if (item.isDevice) {
@@ -328,7 +370,38 @@ export default function ModelsPage() {
         <div className={styles.previewPanelCard}>
           <div className={styles.previewPanelHeader}>
             <div>
-              <h2 className={styles.previewTitle}>{selectedModel.label}</h2>
+              {editingModelName ? (
+                <input
+                  className={styles.modelNameEditInput}
+                  aria-label="AI-generated model name"
+                  value={modelNameDraft}
+                  maxLength={48}
+                  autoFocus
+                  onChange={(event) => setModelNameDraft(event.target.value)}
+                  onBlur={saveModelName}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      event.currentTarget.blur();
+                    } else if (event.key === "Escape") {
+                      event.preventDefault();
+                      cancelModelNameEdit();
+                    }
+                  }}
+                />
+              ) : selectedModel.id.startsWith("custom-") ? (
+                <button
+                  type="button"
+                  className={styles.editableModelTitle}
+                  onClick={startModelNameEdit}
+                  title="Click to rename this AI-generated model"
+                >
+                  <span className={styles.previewTitle}>{selectedModel.label}</span>
+                  <span className={styles.modelNameEditHint}>Rename</span>
+                </button>
+              ) : (
+                <h2 className={styles.previewTitle}>{selectedModel.label}</h2>
+              )}
               <span className={`${styles.categoryBadge} ${categoryBadgeClass(selectedModel.category)}`} style={{ marginTop: "6px" }}>
                 {selectedModel.category}
               </span>

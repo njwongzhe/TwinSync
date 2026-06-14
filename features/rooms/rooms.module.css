@@ -692,7 +692,7 @@
 .hotbarSlot,
 .bagSlot {
   position: relative;
-  min-height: 70px;
+  min-height: 88px;
   padding: 8px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 16px;
@@ -701,8 +701,8 @@
   text-align: left;
 }
 
-.hotbarSlot span,
-.bagSlot span {
+.hotbarSlotNumber,
+.bagSlotNumber {
   position: absolute;
   top: 6px;
   left: 8px;
@@ -711,11 +711,49 @@
   font-weight: 900;
 }
 
+.hotbarIconFrame,
+.bagSlotIconFrame {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  margin-right: auto;
+  margin-left: auto;
+  border: 1px solid rgba(186, 230, 253, 0.3);
+  border-radius: 9px;
+  background: rgba(15, 23, 42, 0.48);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.hotbarIconFrame {
+  width: 44px;
+  height: 44px;
+  margin-top: 7px;
+  margin-bottom: 4px;
+}
+
+.bagSlotIconFrame {
+  width: 42px;
+  height: 42px;
+  margin-top: 9px;
+  margin-bottom: 4px;
+  background: #ffffff;
+}
+
+.generatedItemIcon {
+  position: static;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
 .hotbarSlotIcon {
   display: block;
-  width: 40px;
-  height: 40px;
-  margin: 10px auto 2px;
+  width: 32px;
+  height: 32px;
+  margin: 0;
   object-fit: contain;
 }
 
@@ -750,15 +788,14 @@
 }
 
 .bagSlot strong {
-  margin-top: 22px;
   color: #0f172a;
 }
 
 .bagSlotIcon {
   display: block;
-  width: 38px;
-  height: 38px;
-  margin: 12px auto 2px;
+  width: 30px;
+  height: 30px;
+  margin: 0;
   object-fit: contain;
 }
 
@@ -1228,9 +1265,15 @@
   background: rgba(14, 14, 16, 0.5);
 }
 
-.hotbarSlot span,
-.bagSlot span {
+.hotbarSlotNumber,
+.bagSlotNumber {
   color: #adc6ff;
+}
+
+.hotbarIconFrame,
+.bagSlotIconFrame {
+  border-color: rgba(173, 198, 255, 0.3);
+  background: rgba(14, 14, 16, 0.62);
 }
 
 .activeHotbarSlot,
@@ -1518,11 +1561,67 @@
 }
 
 .previewTitle {
+  display: block;
   margin: 0;
   font-size: 1.6rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--text);
+}
+
+.editableModelTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  padding: 0 0 3px;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  cursor: text;
+  text-align: left;
+}
+
+.editableModelTitle:hover,
+.editableModelTitle:focus-visible {
+  border-bottom-color: var(--accent);
+  outline: none;
+}
+
+.editableModelTitle .previewTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modelNameEditHint {
+  flex-shrink: 0;
+  padding: 3px 7px;
+  border: 1px solid rgba(173, 198, 255, 0.25);
+  border-radius: 5px;
+  color: var(--accent);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.modelNameEditInput {
+  display: block;
+  width: min(100%, 560px);
+  margin: 0;
+  padding: 0 0 3px;
+  border: 0;
+  border-bottom: 1px solid var(--accent);
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
 .previewDesc {
