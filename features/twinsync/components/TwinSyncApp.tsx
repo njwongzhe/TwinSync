@@ -15,13 +15,15 @@ import {
 } from "../domain/telemetry";
 import AlertsPage from "./AlertsPage";
 import DashboardPage from "./DashboardPage";
+import ModelsPage from "./ModelsPage";
 import styles from "../twinsync.module.css";
 
-type MainTab = "dashboard" | "rooms" | "alerts";
+type MainTab = "dashboard" | "rooms" | "models" | "alerts";
 
 const TABS: Array<{ id: MainTab; label: string; shortLabel: string }> = [
   { id: "dashboard", label: "Dashboard", shortLabel: "D" },
   { id: "rooms", label: "Rooms", shortLabel: "R" },
+  { id: "models", label: "Models", shortLabel: "M" },
   { id: "alerts", label: "Alerts", shortLabel: "A" }
 ];
 
@@ -280,6 +282,9 @@ export default function TwinSyncApp() {
               environmentReadings={telemetry.rooms}
               setRooms={setRooms}
             />
+          )}
+          {activeTab === "models" && (
+            <ModelsPage />
           )}
           {activeTab === "alerts" && (
             <AlertsPage

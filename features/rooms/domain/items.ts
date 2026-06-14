@@ -198,8 +198,22 @@ export const DEFAULT_HOTBAR_ITEM_IDS = [
   "door"
 ];
 
-export function getItemDefinition(itemTypeId: string) {
-  return ITEM_DEFINITIONS.find((item) => item.id === itemTypeId);
+export function getItemDefinition(itemTypeId: string): ItemDefinition | undefined {
+  const base = ITEM_DEFINITIONS.find((item) => item.id === itemTypeId);
+  if (base) return base;
+
+  if (typeof window !== "undefined") {
+    try {
+      const stored = window.localStorage.getItem("twinsync-custom-models");
+      if (stored) {
+        const customItems: ItemDefinition[] = JSON.parse(stored);
+        return customItems.find((item) => item.id === itemTypeId);
+      }
+    } catch {
+      // ignore
+    }
+  }
+  return undefined;
 }
 
 export function getItemIconPath(itemTypeId: string) {
@@ -207,6 +221,15 @@ export function getItemIconPath(itemTypeId: string) {
     "wall-ac": "wall-aircond",
     "ceiling-ac": "ceiling-aircond"
   }[itemTypeId] ?? itemTypeId;
+
+  if (itemTypeId.startsWith("custom-")) {
+    const def = getItemDefinition(itemTypeId);
+    if (def) {
+      if (def.category === "device") return "/item-icons/desktop.svg";
+      if (def.category === "furniture") return "/item-icons/small-table.svg";
+      return "/item-icons/whiteboard.svg";
+    }
+  }
 
   return `/item-icons/${iconId}.svg`;
 }

@@ -113,13 +113,19 @@ export default function PanelView({
 
           return (
             <article key={item.id} className={styles.deviceCard}>
-              <Image
-                className={styles.deviceIcon}
-                src={getItemIconPath(definition.id)}
-                alt=""
-                width={56}
-                height={56}
-              />
+              {definition.icon ? (
+                <span className={styles.deviceIcon} style={{ fontSize: "2.5rem", display: "flex", alignItems: "center", justifyContent: "center", width: 56, height: 56 }}>
+                  {definition.icon}
+                </span>
+              ) : (
+                <Image
+                  className={styles.deviceIcon}
+                  src={getItemIconPath(definition.id)}
+                  alt=""
+                  width={56}
+                  height={56}
+                />
+              )}
               <div className={styles.deviceCardBody}>
                 <input
                   className={styles.deviceNameInput}

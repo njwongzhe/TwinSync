@@ -91,15 +91,23 @@ export default function ExplorerHud({
 
             return (
               <div key={index} className={`${styles.hotbarSlot} ${selectedSlot === index ? styles.activeHotbarSlot : ""}`}>
-                <span>{numberLabel}</span>
+                <span className={styles.hotbarSlotNumber}>{numberLabel}</span>
                 {definition && (
-                  <Image
-                    className={styles.hotbarSlotIcon}
-                    src={getItemIconPath(definition.id)}
-                    alt=""
-                    width={40}
-                    height={40}
-                  />
+                  <span className={styles.hotbarIconFrame}>
+                    {definition.icon ? (
+                      <span className={styles.generatedItemIcon} aria-hidden="true">
+                        {definition.icon}
+                      </span>
+                    ) : (
+                      <Image
+                        className={styles.hotbarSlotIcon}
+                        src={getItemIconPath(definition.id)}
+                        alt=""
+                        width={32}
+                        height={32}
+                      />
+                    )}
+                  </span>
                 )}
                 <small>{definition?.label ?? "Empty"}</small>
               </div>
