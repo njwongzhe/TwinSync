@@ -2,7 +2,8 @@ import { DigitalTwinRoom, ItemDefinition, PlacedItem, Vector3Data } from "./type
 import { getItemDefinition, GRID_SIZE } from "./items";
 
 export function roundToGrid(value: number) {
-  return Math.round(value / GRID_SIZE) * GRID_SIZE;
+  const rounded = Math.round(value / GRID_SIZE) * GRID_SIZE;
+  return Math.round(rounded * 100) / 100;
 }
 
 export function snapVectorToGrid(position: Vector3Data): Vector3Data {
