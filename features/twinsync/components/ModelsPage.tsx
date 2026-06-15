@@ -455,14 +455,14 @@ export default function ModelsPage() {
               <span className={styles.canvasOverlayLabel}>
                 Orbit & Scroll to Inspect
               </span>
-              <label className={styles.checkboxContainer}>
-                <input
-                  type="checkbox"
-                  checked={autoRotate}
-                  onChange={(e) => setAutoRotate(e.target.checked)}
-                />
-                Auto Rotate
-              </label>
+              <button
+                type="button"
+                className={styles.canvasControlBtn}
+                onClick={() => setAutoRotate(!autoRotate)}
+              >
+                <span style={{ color: autoRotate ? "#4ade80" : "#64748b", marginRight: "6px" }}>●</span>
+                Auto Rotate: {autoRotate ? "On" : "Off"}
+              </button>
             </div>
           </div>
 

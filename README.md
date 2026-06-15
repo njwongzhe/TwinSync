@@ -48,7 +48,7 @@ It integrates a high-performance **Next.js Web Client** with a real-time **React
 
 *   **Interactive Dashboard**: Real-time aggregated statistics (Total Rooms, Active Devices, Active Alerts, Current Portfolio Load), hottest room indicator, overall sensor health status, and live telemetry charts showing average temperature and power load.
 *   **3D Room Explorer & Sandbox**: A first-person 3D environment built on React Three Fiber. Users can move around, look, and place/edit objects dynamically on a 1×1 meter snapping grid.
-*   **3D Asset Registry**: A dedicated browsable catalogue of all available 3D models — including built-in assets and AI-generated custom assets — with a live interactive 3D preview, device telemetry simulation (On / Off / Fault states), and full metadata inspection (dimensions, mount type, power draw).
+*   **3D Asset Registry**: A dedicated browsable catalogue of all available 3D models — including built-in assets and AI-generated custom assets — with a live interactive 3D preview featuring a styled **Auto Rotate** toggle button, device telemetry simulation (On / Off / Fault states), and full metadata inspection (dimensions, mount type, power draw).
 *   **Asset Library & Mount System**: Pre-built 3D models for furniture, structures, and electronic devices. Assets support different mounting constraints (`floor`, `wall`, or `ceiling`) and automatically snap to appropriate vertical heights:
     *   *Devices*: Wall/Ceiling Air Conditioners, Projectors, Ceiling Lights, Standalone Desktops, Printers, Sensors.
     *   *Furniture*: Desks with Desktops, Small Tables, Long Tables, Office Chairs, Sofas, Cabinets, Shelves, Beds.
@@ -182,6 +182,13 @@ Each room has baseline metrics depending on its layout type:
 *   **Device Thermal Load**: Active devices raise ambient temperatures relative to the percentage of active vs. inactive equipment.
 *   **Sensor Health**: On cycle intervals, certain sensor status indicators toggle to `degraded` to simulate physical hardware signal drops.
 
+### 4. Demo Mode & Alert Injection (F2 Key)
+To facilitate live demonstrations, you can manually toggle alert states using global keyboard triggers:
+*   **F2 Keyboard Trigger**: Pressing `F2` globally transitions the simulation cycle state in a double-random toggle:
+    *   If the active state is **normal**, pressing `F2` transitions to a **randomly selected alert cycle** (Cycle 6 or 24), pausing the 8-second auto-transition.
+    *   If the active state is **alerting**, pressing `F2` transitions to a **randomly selected normal cycle**, immediately clearing alerts and resuming automatic telemetry transitions.
+*   **Centralized Logic**: All mock configurations, baseline layouts, operating phases, and transition logic are encapsulated inside the independent [demo.ts](file:///e:/GitHub/TwinSync/features/twinsync/domain/demo.ts) file.
+
 <br />
 
 ---
@@ -239,6 +246,7 @@ The 3D sandbox explorer utilizes an immersive canvas. Follow this command sheet 
 | **Place Item** | **Q Key** | Places the active hotbar item at the grid indicator (snaps to floor/wall/ceiling). |
 | **Remove Hovered** | **E Key** | Instantly deletes the item you are currently looking at. |
 | **Device Settings** | **Left-Click Device** | Open the control panel overlay for the selected active device. |
+| **Alert Toggle** | **F2 Key** | Toggles randomly between a critical alert cycle and a normal telemetry cycle (available globally). |
 
 <br />
 

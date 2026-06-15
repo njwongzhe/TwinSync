@@ -13,6 +13,12 @@ import {
   createLiveTelemetrySnapshot,
   TELEMETRY_INTERVAL_MS
 } from "../domain/telemetry";
+import {
+  isAlertingCycle,
+  getNextNormalCycle,
+  getRandomNormalCycle,
+  getRandomAlertCycle
+} from "../domain/demo";
 import AlertsPage from "./AlertsPage";
 import DashboardPage from "./DashboardPage";
 import ModelsPage from "./ModelsPage";
@@ -48,6 +54,8 @@ function saveNotificationPreference(enabled: boolean) {
     // The app remains usable if browser storage is unavailable.
   }
 }
+
+
 
 export default function TwinSyncApp() {
   const [activeTab, setActiveTab] = useState<MainTab>("dashboard");
@@ -85,11 +93,40 @@ export default function TwinSyncApp() {
     }
 
     const intervalId = window.setInterval(() => {
-      setTelemetryCycle((currentCycle) => currentCycle + 1);
+      setTelemetryCycle((currentCycle) => {
+        if (isAlertingCycle(currentCycle)) {
+          return currentCycle;
+        }
+        return getNextNormalCycle(currentCycle);
+      });
     }, TELEMETRY_INTERVAL_MS);
 
     return () => window.clearInterval(intervalId);
   }, [hydrated]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (
+        event.target instanceof HTMLElement &&
+        ["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)
+      ) {
+        return;
+      }
+
+      if (event.key === "F2") {
+        event.preventDefault();
+        setTelemetryCycle((current) => {
+          if (isAlertingCycle(current)) {
+            return getRandomNormalCycle(current);
+          }
+          return getRandomAlertCycle(current);
+        });
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const telemetry = useMemo(
     () => createLiveTelemetrySnapshot(rooms, telemetryCycle),

@@ -1653,9 +1653,38 @@
   pointer-events: none;
 }
 
-.canvasControlBtn,
 .canvasOverlayLabel {
   pointer-events: auto;
+}
+
+.canvasControlBtn {
+  pointer-events: auto;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 750;
+  color: #e2e8f0;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  display: flex;
+  align-items: center;
+}
+
+.canvasControlBtn:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(173, 198, 255, 0.45);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.canvasControlBtn:active {
+  transform: translateY(0);
 }
 
 .canvasOverlayLabel {
