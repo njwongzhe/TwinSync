@@ -1,6 +1,6 @@
 import { ItemDefinition } from "./types";
 
-export const GRID_SIZE = 1;
+export const GRID_SIZE = 0.2;
 export const MAJOR_GRID_EVERY = 5;
 
 export const ITEM_DEFINITIONS: ItemDefinition[] = [
